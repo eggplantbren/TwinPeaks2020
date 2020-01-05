@@ -24,7 +24,11 @@ dependencies:
     - vector
 
 library:
-  source-dirs: src
+    source-dirs: src
+    ghc-options:
+    - -Wall
+    - -Wextra
+    - -O2
 
 executables:
   Main:
