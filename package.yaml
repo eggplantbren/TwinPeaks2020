@@ -20,16 +20,19 @@ extra-source-files:
 description:         Please see the README on GitHub at <https://github.com/eggplantbren/TwinPeaks2020#readme>
 
 dependencies:
-- base >= 4.7 && < 5
+    - base >= 4.7 && < 5
 
 library:
   source-dirs: src
 
 executables:
-  TwinPeaks2020-exe:
+  Main:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
+    - -Wall
+    - -Wextra
+    - -O2
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
@@ -37,7 +40,7 @@ executables:
     - TwinPeaks2020
 
 tests:
-  TwinPeaks2020-test:
+  test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
