@@ -1,6 +1,13 @@
 module Main where
 
-import Lib
+-- Imports
+import qualified Data.Text.IO as T
+import Example
+import System.Random.MWC
+import Walkable
 
 main :: IO ()
-main = someFunc
+main = withSystemRandom . asGenIO $ \rng -> do
+    particle <- fromPrior rng :: IO Point
+    T.putStrLn $ render particle
+
