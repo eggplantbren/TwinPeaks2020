@@ -30,3 +30,35 @@ randh rng = do
     let scale = 10.0**e
     (* scale) <$> standard rng
 
+
+
+
+
+-- Perturb a Double while staying within a given interval
+boundedPerturb :: PrimMonad m
+               => Double
+               -> (Double, Double)
+               -> Gen (PrimState m)
+               -> m (Double, Double)
+boundedPerturb x (left, right) rng = do
+    let width = right - left
+    jump <- (width*) <$> randh rng
+    return (wrap (x + jump) (left, right), 0.0)
+
+
+
+-- Mod
+myMod :: Double -> Double -> Double
+myMod y x = (y/x - ((fromIntegral :: Int -> Double) . floor) (y/x))*x
+
+
+-- Wrap
+wrap :: Double -> (Double, Double) -> Double
+wrap x (a, b)
+    | x < xMin || x > xMax = myMod (x - xMin) (xMax - xMin) + xMin
+    | otherwise            = x
+  where
+    xMin = min a b
+    xMax = max a b
+
+
