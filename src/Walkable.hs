@@ -18,6 +18,9 @@ class Walkable a where
     perturb :: PrimMonad m
             => a -> Gen (PrimState m) -> m (a, Double)
 
+    -- The two scalars
+    getScalars :: a -> (Double, Double)
+
     -- Render to text value for CSV output
     render :: a -> T.Text
 
