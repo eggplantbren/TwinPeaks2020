@@ -1,7 +1,9 @@
+{-# LANGUAGE NoImplicitPrelude #-} 
+
 module Main where
 
 -- Imports
-import qualified Data.Text.IO as T
+import BasicPrelude
 import Example
 import System.Random.MWC
 import Walkable
@@ -9,5 +11,5 @@ import Walkable
 main :: IO ()
 main = withSystemRandom . asGenIO $ \rng -> do
     particle <- fromPrior rng :: IO Point
-    T.putStrLn $ render particle
+    explore particle 1000000 100 rng
 

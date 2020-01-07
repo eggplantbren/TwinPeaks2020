@@ -1,6 +1,9 @@
+{-# LANGUAGE NoImplicitPrelude #-} 
+
 module Utils where
 
 -- Imports
+import BasicPrelude
 import Control.Monad.Primitive
 import qualified Data.Vector.Unboxed as U
 import System.Random.MWC
@@ -15,7 +18,6 @@ logsumexp xs =
         ys      = U.map (\x -> exp $ x - biggest) xs
     in
         biggest + log(U.sum ys)
-
 
 
 -- New year, new randh
@@ -60,5 +62,4 @@ wrap x (a, b)
   where
     xMin = min a b
     xMax = max a b
-
 

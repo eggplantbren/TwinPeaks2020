@@ -1,11 +1,12 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
 module Example where
 
 -- Imports
+import BasicPrelude
 import Control.Monad.Primitive
-import qualified Data.Text as T
 import qualified Data.Vector.Unboxed as U
 import qualified Data.Vector.Unboxed.Mutable as UM
 import System.Random.MWC
@@ -22,12 +23,11 @@ data Point =
         Point
         {
             xs :: !(U.Vector Double)
-        } deriving (Eq, Read, Show);
+        } deriving (Eq, Read);
 
 
 instance Walkable Point where
     fromPrior  = fromPrior_
-    render     = render_
     perturb    = perturb_
     getScalars = getScalars_
 
@@ -62,12 +62,11 @@ getScalars_ :: Point -> (Double, Double)
 getScalars_ Point {..} = (0.0, 0.0)
 
 
--- Render to text
-render_ :: Point -> T.Text
-render_ (Point {..}) =
-    let
-        renderOne x = T.pack (show x ++ ",")  -- renderOne :: Double -> Text
-        parts       = map renderOne (U.toList xs) -- parts :: [Text]
-    in
-        T.init $ T.concat parts
+instance Show Point where
+    show (Point {..}) =
+        let
+            renderOne x = show x ++ ","  -- renderOne :: Double -> Text
+            parts       = map renderOne (U.toList xs) -- parts :: [Text]
+        in
+            concat parts
 
