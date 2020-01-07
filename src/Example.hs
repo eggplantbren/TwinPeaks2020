@@ -7,7 +7,9 @@ module Example where
 import Control.Monad.Primitive
 import qualified Data.Text as T
 import qualified Data.Vector.Unboxed as U
+import qualified Data.Vector.Unboxed.Mutable as UM
 import System.Random.MWC
+import Utils
 import Walkable
 
 -- Number of dimensions
@@ -39,13 +41,20 @@ fromPrior_ rng = do
     return $ Point {..}
 
 
--- TODO: Implement
+-- Perturber
 perturb_ :: PrimMonad m
          => Point
          -> Gen (PrimState m)
          -> m (Point, Double)
-perturb_ point rng = return (point, 0.0)
+perturb_ Point {..} rng = do
+    k <- uniformR (0, n-1) rng
+    (x', logH) <- boundedPerturb (xs U.! k) (0.0, 1.0) rng
 
+    mvec <- U.thaw xs
+    _ <- UM.write mvec k x'
+    xs' <- U.unsafeFreeze mvec
+
+    return (Point {xs=xs'}, logH)
 
 
 
