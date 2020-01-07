@@ -7,10 +7,8 @@ module Walkable where
 
 -- Imports
 import BasicPrelude
-import Control.Monad
 import Control.Monad.Primitive
 import System.Random.MWC
-import Utils
 
 -- Functions that must be defined for a sampleable type
 class (Show a) => Walkable a where
@@ -37,7 +35,7 @@ metropolisStep x rng = do
     (proposal, logH) <- perturb x rng
     let logH' = if logH > 0.0 then 0.0 else logH
     u <- uniformR (0.0 :: Double, 1.0 :: Double) rng
-    let x' = if u < (exp logH') then proposal else x
+    let x' = if u < exp logH' then proposal else x
     return x'
 
 

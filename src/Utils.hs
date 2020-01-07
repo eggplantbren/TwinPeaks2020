@@ -28,7 +28,7 @@ randh rng = do
 
     -- Reflected exponential of scale length 3
     -- that maxes out at 1.
-    e <- (\u -> 1.0 + 3.0*log(u)) <$> uniform rng
+    e <- (\u -> 1.0 + 3.0*log u) <$> uniform rng
     let scale = 10.0**e
     (* scale) <$> standard rng
 

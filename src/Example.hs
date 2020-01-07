@@ -19,10 +19,10 @@ n = 20
 
 
 -- A point in parameter space
-data Point =
+newtype Point =
         Point
         {
-            xs :: !(U.Vector Double)
+            xs :: U.Vector Double
         } deriving (Eq, Read);
 
 
@@ -63,7 +63,7 @@ getScalars_ Point {..} = (0.0, 0.0)
 
 
 instance Show Point where
-    show (Point {..}) =
+    show Point {..} =
         let
             renderOne x = show x ++ ","  -- renderOne :: Double -> Text
             parts       = map renderOne (U.toList xs) -- parts :: [Text]
