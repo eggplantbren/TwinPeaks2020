@@ -50,7 +50,7 @@ explore x steps thin rng
     | steps <= 0 = return ()
     | otherwise  = do
         when (steps `mod` thin == 0)
-                (putStrLn $ tshow steps <> "," <> tshow x)
+                (print x)
         x' <- metropolisStep x rng
         explore x' (steps-1) thin rng
 

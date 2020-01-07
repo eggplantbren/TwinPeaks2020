@@ -68,5 +68,5 @@ instance Show Point where
             renderOne x = show x ++ ","  -- renderOne :: Double -> Text
             parts       = map renderOne (U.toList xs) -- parts :: [Text]
         in
-            concat parts
+            init $ concat parts
 
