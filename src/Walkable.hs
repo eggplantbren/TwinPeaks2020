@@ -34,6 +34,9 @@ metropolis :: (PrimMonad m, Walkable a)
            -> Gen (PrimState m)
            -> m a
 metropolis x rng = do
-    return x
-
+    (proposal, logH) <- perturb x rng
+    let logH' = if logH > 0.0 then 0.0 else logH
+    u <- uniformR (0.0 :: Double, 1.0 :: Double) rng
+    let x' = if u < (exp logH') then proposal else x
+    return x'
 
