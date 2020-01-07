@@ -24,3 +24,16 @@ class Walkable a where
     -- Render to text value for CSV output
     render :: a -> T.Text
 
+
+
+-- Do a Metropolis move wrt the prior
+-- TODO: Implement
+-- TODO: Allow constraints
+metropolis :: (PrimMonad m, Walkable a)
+           => a
+           -> Gen (PrimState m)
+           -> m a
+metropolis x rng = do
+    return x
+
+
