@@ -63,8 +63,8 @@ exampleGetScalars Example {..} =
     let
         w = 0.01 -- Width
         tau = 1.0/w**2
-        ln_f = U.foldl' (\x acc -> acc - 0.5*tau*(x - 0.5)**2) 0.0 xs
-        ln_g = U.foldl' (\x acc -> acc - 0.5*tau*(x - 0.4)**2) 0.0 xs
+        ln_f = U.foldl' (\acc x -> acc - 0.5*tau*(x - 0.5)**2) 0.0 xs
+        ln_g = U.foldl' (\acc x -> acc - 0.5*tau*(x - 0.4)**2) 0.0 xs
     in
         (ln_f, ln_g)
 

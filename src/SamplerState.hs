@@ -1,8 +1,11 @@
+{-# LANGUAGE NoImplicitPrelude #-} 
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module SamplerState where
 
 -- Imports
+import BasicPrelude
 import Control.Monad.Primitive
 import qualified Data.Vector as V
 import System.Random.MWC
@@ -16,7 +19,7 @@ data SamplerState a =
     {
         particles :: !(V.Vector a),
         scalars   :: !(V.Vector (Double, Double))
-    } deriving (Eq, Read, Show);
+    } deriving (Eq, Read);
 
 
 -- Generate an initial sampler state of the given size.
@@ -31,11 +34,31 @@ genSamplerState numParticles rng = do
 
 
 
--- Calculate a lower corner count
+
+-- Calculate a single lower corner count
 lcc :: (Double, Double) -> SamplerState a -> Int
 lcc pair SamplerState {..} =
     let
         shadowed = V.map (\p -> p `lt'` pair) scalars
     in
         V.sum shadowed
+
+
+
+-- LCCs of all particles
+particleLccs :: SamplerState a -> V.Vector Int
+particleLccs SamplerState {..} = V.map lcc' scalars 
+    where
+        lcc' s = lcc s SamplerState {..}
+
+
+-- Show instance
+instance Show (SamplerState a) where
+    show SamplerState {..} =
+        let
+            lccs = particleLccs SamplerState {..}
+            rows = V.zipWith (\(a, b) c -> (a, b, c)) scalars lccs
+            pr (a, b, c) = show a ++ "," ++ show b ++ "," ++ show c ++ "\n"
+        in
+            concat $ V.toList (V.map pr rows)
 
