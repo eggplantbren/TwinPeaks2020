@@ -19,34 +19,34 @@ n = 20
 
 
 -- A point in parameter space
-newtype Point =
-        Point
+newtype Example =
+        Example
         {
             xs :: U.Vector Double
         } deriving (Eq, Read);
 
 
-instance Walkable Point where
-    fromPrior  = fromPrior_
-    perturb    = perturb_
-    getScalars = getScalars_
+instance Walkable Example where
+    fromPrior  = exampleFromPrior
+    perturb    = examplePerturb
+    getScalars = exampleGetScalars
 
 
 -- Generate from the prior
-fromPrior_ :: PrimMonad m
-          => Gen (PrimState m)
-          -> m Point
-fromPrior_ rng = do
+exampleFromPrior :: PrimMonad m
+                 => Gen (PrimState m)
+                 -> m Example
+exampleFromPrior rng = do
     xs <- U.replicateM n (uniform rng)
-    return $ Point {..}
+    return $ Example {..}
 
 
 -- Perturber
-perturb_ :: PrimMonad m
-         => Point
-         -> Gen (PrimState m)
-         -> m (Point, Double)
-perturb_ Point {..} rng = do
+examplePerturb :: PrimMonad m
+               => Example
+               -> Gen (PrimState m)
+               -> m (Example, Double)
+examplePerturb Example {..} rng = do
     k <- uniformR (0, n-1) rng
     (x', logH) <- boundedPerturb (xs U.! k) (0.0, 1.0) rng
 
@@ -54,16 +54,23 @@ perturb_ Point {..} rng = do
     _ <- UM.write mvec k x'
     xs' <- U.unsafeFreeze mvec
 
-    return (Point {xs=xs'}, logH)
+    return (Example {xs=xs'}, logH)
 
 
 
-getScalars_ :: Point -> (Double, Double)
-getScalars_ Point {..} = (0.0, 0.0)
+exampleGetScalars :: Example -> (Double, Double)
+exampleGetScalars Example {..} =
+    let
+        w = 0.01 -- Width
+        tau = 1.0/w**2
+        ln_f = U.foldl' (\x acc -> acc - 0.5*tau*(x - 0.5)**2) 0.0 xs
+        ln_g = U.foldl' (\x acc -> acc - 0.5*tau*(x - 0.4)**2) 0.0 xs
+    in
+        (ln_f, ln_g)
 
 
-instance Show Point where
-    show Point {..} =
+instance Show Example where
+    show Example {..} =
         let
             renderOne x = show x ++ ","  -- renderOne :: Double -> Text
             parts       = map renderOne (U.toList xs) -- parts :: [Text]
