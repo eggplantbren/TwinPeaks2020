@@ -40,17 +40,26 @@ metropolisStep x rng = do
 
 
 -- Do metropolis steps with logging
+explore_ :: Walkable a
+        => a
+        -> Int
+        -> Int
+        -> Int
+        -> Gen RealWorld
+        -> IO ()
+explore_ x i steps thin rng = do
+    let output k =  when (i `mod` thin == 0) (putStrLn $ tshow k ++ "," ++ tshow x)
+    output i
+    x' <- metropolisStep x rng
+    if i >= steps-1 then output (i+1) else explore_ x' (i+1) steps thin rng
+
+
+-- Version with i starting from zero. This is the one that should be used.
 explore :: Walkable a
         => a
         -> Int
         -> Int
         -> Gen RealWorld
         -> IO ()
-explore x steps thin rng
-    | steps <= 0 = return ()
-    | otherwise  = do
-        when (steps `mod` thin == 0)
-                (print x)
-        x' <- metropolisStep x rng
-        explore x' (steps-1) thin rng
+explore x steps thin rng = explore_ x 0 steps thin rng
 

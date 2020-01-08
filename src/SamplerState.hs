@@ -28,3 +28,7 @@ genSamplerState numParticles rng = do
     let scalars = V.map getScalars particles
     return $ SamplerState {..}
 
+
+
+--
+

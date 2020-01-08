@@ -11,5 +11,5 @@ import Walkable
 main :: IO ()
 main = withSystemRandom . asGenIO $ \rng -> do
     particle <- fromPrior rng :: IO Example
-    explore particle 1000000 100 rng
+    explore particle 100 1 rng
 
