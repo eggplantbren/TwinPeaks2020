@@ -34,6 +34,14 @@ randh rng = do
 
 
 
+-- "Less than" for pairs
+lt :: (Double, Double) -> (Double, Double) -> Bool
+lt (x, y) (x', y') = (x < x') && (y < y')
+
+
+-- A version that returns an Int instead of a Bool
+lt' :: (Double, Double) -> (Double, Double) -> Int
+lt' (x, y) (x', y') = fromEnum $ lt (x, y) (x', y')
 
 
 -- Perturb a Double while staying within a given interval

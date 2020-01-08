@@ -6,6 +6,7 @@ module SamplerState where
 import Control.Monad.Primitive
 import qualified Data.Vector as V
 import System.Random.MWC
+import Utils
 import Walkable
 
 
@@ -30,5 +31,11 @@ genSamplerState numParticles rng = do
 
 
 
---
+-- Calculate a lower corner count
+lcc :: (Double, Double) -> SamplerState a -> Int
+lcc pair SamplerState {..} =
+    let
+        shadowed = V.map (\p -> p `lt'` pair) scalars
+    in
+        V.sum shadowed
 
