@@ -52,6 +52,11 @@ particleLccs SamplerState {..} = V.map lcc' scalars
         lcc' s = lcc s SamplerState {..}
 
 
+-- Particles with zero LCCs
+zeroLccParticles :: SamplerState a -> V.Vector Bool
+zeroLccParticles = (V.map (== 0)) . (particleLccs)
+
+
 -- Show instance
 instance Show (SamplerState a) where
     show SamplerState {..} =
