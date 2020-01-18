@@ -39,7 +39,7 @@ genSamplerState numParticles rng = do
 lcc :: (Double, Double) -> SamplerState a -> Int
 lcc pair SamplerState {..} =
     let
-        shadowed = V.map (\p -> p `lt'` pair) scalars
+        shadowed = V.map (`lt'` pair) scalars
     in
         V.sum shadowed
 
@@ -54,8 +54,20 @@ particleLccs SamplerState {..} = V.map lcc' scalars
 
 -- Particles with zero LCCs
 zeroLccParticles :: SamplerState a -> V.Vector Bool
-zeroLccParticles = (V.map (== 0)) . (particleLccs)
+zeroLccParticles = V.map (== 0) . particleLccs
 
+
+-- Select a zero LCC particle and return its index.
+chooseParticle :: PrimMonad m
+               => SamplerState a
+               -> Gen (PrimState m)
+               -> m Int
+chooseParticle SamplerState {..} rng = do
+    let candidates = zeroLccParticles SamplerState {..}
+    let randIndex bools rng' = do
+            i <- uniformR (0, V.length bools - 1) rng'
+            if bools V.! i then return i else randIndex bools rng'
+    randIndex candidates rng
 
 -- Show instance
 instance Show (SamplerState a) where
