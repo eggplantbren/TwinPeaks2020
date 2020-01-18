@@ -13,8 +13,10 @@ import Walkable
 -- Generate a sampler state and print it to stdout
 main :: IO ()
 main = withSystemRandom . asGenIO $ \rng -> do
-    samplerState <- genSamplerState 1000 rng :: IO (SamplerState Example)
-    print samplerState 
+    samplerState <- genSamplerState 10 rng :: IO (SamplerState Example)
+    k <- chooseParticle samplerState rng
+    print samplerState
+    print k
 
 
 -- Test Metropolis engine
